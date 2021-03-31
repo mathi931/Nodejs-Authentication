@@ -8,8 +8,22 @@ dotenv.config();
 //connect to DB
 mongoose.connect(
     process.env.DB_CONNECT,
-{ useUnifiedTopology: true },
-()=> console.log('connected to db!'));
+{ useUnifiedTopology: true,
+ useNewUrlParser: true 
+});
+
+//check test connection
+mongoose.connection
+	.once('open', () => {
+		console.log('connected to the DB');
+	})
+	.on('error', (err) => {
+		console.log(`connection error: ${err}`);
+	});
+
+//Middleware
+app.use(express.json());
+
 
 //Import Routes
 const authRoute=  require('./routes/auth');
@@ -19,4 +33,4 @@ const authRoute=  require('./routes/auth');
 app.use('/api/user', authRoute);
 
 
-app.listen(3000, ()=> console.log('Server Up and running'));
+app.listen(3000);
